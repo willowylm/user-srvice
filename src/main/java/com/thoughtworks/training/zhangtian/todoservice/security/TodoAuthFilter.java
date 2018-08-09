@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.support.RequestContext;
 import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.FilterChain;
@@ -33,6 +34,7 @@ public class TodoAuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        System.out.println(request);
         if (!StringUtils.isEmpty(token)) {
             Claims body = Jwts.parser()
                     .setSigningKey(privatePassword.getBytes("UTF-8"))
