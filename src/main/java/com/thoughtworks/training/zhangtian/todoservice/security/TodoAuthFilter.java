@@ -26,8 +26,8 @@ public class TodoAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
 
-    @Value("${private.password}")
-    private String privatePassword;
+//    @Value("${private.password}")
+//    private String privatePassword;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -36,15 +36,10 @@ public class TodoAuthFilter extends OncePerRequestFilter {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         System.out.println(request);
         if (!StringUtils.isEmpty(token)) {
-            Claims body = Jwts.parser()
-                    .setSigningKey(privatePassword.getBytes("UTF-8"))
-                    .parseClaimsJws(token)
-                    .getBody();
 
-
-                int id = (int) body.get("id");
+            User user = analyzeToken(token);
                 SecurityContextHolder.getContext().setAuthentication(
-                        new UsernamePasswordAuthenticationToken(id,
+                        new UsernamePasswordAuthenticationToken(user,
                                 null,
                                 Collections.emptyList())
                 );
@@ -53,11 +48,14 @@ public class TodoAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean validateToken(Claims body) {
+    private User analyzeToken(String token) {
 
+        String[] tokens = token.split(":");
         User user = new User();
-        user.setName((String) body.get("name"));
-        user.setPassword((String) body.get("password"));
-        return userService.validate(user);
+
+        user.setName(tokens[1]);
+        user.setId(Integer.valueOf(tokens[0]));
+        return user;
+
     }
 }

@@ -1,0 +1,13 @@
+spring:
+   application:
+      name: user-service
+   cloud:
+      config:
+        fail-fast: true
+        uri: http://config-server:8099/
+
+server:
+    port: 8081
+
+private:
+  password: zhangtian

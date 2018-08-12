@@ -17,12 +17,14 @@ public class UserService {
     private UserRepository userRepository;
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    @Autowired
+    private SpellCheckerService spellCheckerService;
+
 
     public Integer create(User user) {
         String password = user.getPassword();
 
         user.setPassword(encoder.encode(password));
-
         return userRepository.save(user).getId();
     }
 
@@ -31,7 +33,9 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        spellCheckerService.check(users);
+        return users;
     }
 
     public Boolean validate(User user) {
