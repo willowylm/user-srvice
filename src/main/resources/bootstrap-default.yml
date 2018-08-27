@@ -4,6 +4,6 @@ spring:
     location: ../config/application.yml,../config/application-default.yml,../config/
   cloud:
     config:
-      enabled: false
+      enabled: true
 
 
